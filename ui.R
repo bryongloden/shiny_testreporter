@@ -84,7 +84,7 @@ shinyUI(fluidPage(
                       id = "leftPanel2",
                       div(
                         id = "skillTypePanel",
-                        selectInput("courseLevel", "Select Course", choices = c('', 'Grammar', 'Reading', 'Writing Adv', 'Writing Int', 'Writing Basic', 'Listening/Speaking'), selected = ''))
+                        selectInput("courseLevel", "Select Course", choices = c('Make a choice', 'Grammar', 'Reading', 'Writing Adv', 'Writing Int', 'Writing Basic'), selected = 'Make a choice'))
                       ),
                column(6,
                       id = 'panel3',

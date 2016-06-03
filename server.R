@@ -65,12 +65,17 @@ shinyServer(function(input, output) {
   # Pass/Fail function
   table_desc_all <- reactive({
     
+    validate(
+      need(try(input$sum != All), "Please make a selection")
+    )
+    
+
     db <- dbConnect(SQLite(), 'Achievement')
     query <- sprintf("SELECT * FROM %s", input$sum)
 
     DATA <- dbGetQuery(db, query)
     dbDisconnect(db)
-        
+    
     DATA %>%
       mutate(Level = factor(Level)) %>%
       group_by(Level, Student) %>%
@@ -86,13 +91,19 @@ shinyServer(function(input, output) {
   
   # Test descriptives, all
   descriptives_all <- reactive({
+    
+    validate(
+      need(try(input$sum != All), "Please make a selection")
+    )
 
     db <- dbConnect(SQLite(), 'Achievement')
     query <- sprintf("SELECT * FROM %s", input$sum)
     
     DATA <- dbGetQuery(db, query)
     dbDisconnect(db)
-        
+    
+    
+    
     DATA %>%
       summarise(
         'N' = length(unique(Student)),
@@ -127,6 +138,10 @@ shinyServer(function(input, output) {
   
   # Descriptives by level
   descriptives_level <- reactive({
+    
+    validate(
+      need(try(input$sum != All), "Please make a selection")
+    )
 
     db <- dbConnect(SQLite(), 'Achievement')
     query <- sprintf("SELECT * FROM %s", input$sum)
@@ -172,6 +187,10 @@ shinyServer(function(input, output) {
   
   plot_desc_all <- reactive({
     
+    validate(
+      need(try(input$sum != All), "Please make a selection")
+    )
+    
     db <- dbConnect(SQLite(), 'Achievement')
     query <- sprintf("SELECT * FROM %s", input$sum)
 
@@ -199,6 +218,9 @@ shinyServer(function(input, output) {
   
   plot_dist_all <- reactive({
     
+    validate(
+      need(try(input$sum != All), "Please make a selection")
+    )
 
     db <- dbConnect(SQLite(), 'Achievement')
     query <- sprintf("SELECT * FROM %s", input$sum)
@@ -224,6 +246,10 @@ shinyServer(function(input, output) {
   })
   
   plot_dist <- reactive({
+    
+    validate(
+      need(try(input$sum != All), "Please make a selection")
+    )
 
     db <- dbConnect(SQLite(), 'Achievement')
     query <- sprintf("SELECT * FROM %s", input$sum)
@@ -256,6 +282,10 @@ shinyServer(function(input, output) {
   # Distribution plot output
   output$dist <- renderPlot({
     
+    validate(
+      need(try(input$level != All), "Please make a selection")
+    )
+    
     switch (input$level,
             
             'All' = plot_dist_all(),
@@ -271,6 +301,10 @@ shinyServer(function(input, output) {
   
   # Decision plot output
   output$desc <- renderPlot({
+    
+    validate(
+      need(try(input$level != All), "Please make a selection")
+    )
     
     switch (input$level,
             
@@ -288,6 +322,7 @@ shinyServer(function(input, output) {
   # Progression tale
   output$progressionTable <- DT::renderDataTable(
     
+
     switch (input$level,
   
             'All' = DT::datatable(
@@ -365,36 +400,36 @@ shinyServer(function(input, output) {
   )
   
   output$course <- renderUI({
-    if (is.null(input$courseLevel))
-      return()
     
-    # Depending on input$input_type, we'll generate a different
-    # UI component and send it to the client.
+    if (input$courseLevels == "Make a choice") {
+      return("Please select a level")
+    } 
+    
     switch(input$courseLevel,
            
-           'Grammar' = selectInput("dynamic", "Select Test", choices = c("", gramT), selected = ""),
-           'Reading' = selectInput("dynamic", "Select Test", choices = c("",readT), selected = ""),
-           'Writing Adv' = selectInput("dynamics", "Select Test", choices = c("",writT), selected = ""),
-           'Writing Int' = selectInput("dynamics", "Select Test", choices = c("",writT), selected = ""),
-           'Writing Basic' = selectInput("dynamics", "Select Test", choices = c("",writT), selected = ""),
-           'Listening/Speaking' = selectInput("dynamic", "Select Test", c("",choices = lstspT), selected = "")
+           'Grammar' = selectInput("dynamic", "Select Test", choices = c("Make a choice", gramT), selected = "Make a choice"),
+           'Reading' = selectInput("dynamic", "Select Test", choices = c("Make a choice",readT), selected = "Make a choice"),
+           'Writing Adv' = selectInput("dynamics", "Select Test", choices = c("Make a choice",writT), selected = "Make a choice"),
+           'Writing Int' = selectInput("dynamics", "Select Test", choices = c("Make a choice",writT), selected = "Make a choice"),
+           'Writing Basic' = selectInput("dynamics", "Select Test", choices = c("Make a choice",writT), selected = "Make a choice"),
+           'Listening/Speaking' = selectInput("dynamic", "Select Test", c("Make a choice",choices = lstspT), selected = "Make a choice")
     )
   })
   
   output$courseS <- renderUI({
-    if (is.null(input$courseLevels))
-      return()
-    
-    # Depending on input$input_type, we'll generate a different
-    # UI component and send it to the client.
+
+    if (input$courseLevels == "Make a choice") {
+      return("Please select a level")
+    } 
+
     switch(input$courseLevels,
            
-           'Grammar' = selectInput("dynamics", "Select Test", choices = c("", gramT), selected = ""),
-           'Reading' = selectInput("dynamics", "Select Test", choices = c("",readT), selected = ""),
-           'Writing Adv' = selectInput("dynamics", "Select Test", choices = c("",writT), selected = ""),
-           'Writing Int' = selectInput("dynamics", "Select Test", choices = c("",writT), selected = ""),
-           'Writing Basic' = selectInput("dynamics", "Select Test", choices = c("",writT), selected = ""),
-           'Listening/Speaking' = selectInput("dynamics", "Select Test", c("",choices = lstspT), selected = "")
+           'Grammar' = selectInput("dynamics", "Select Test", choices = c("Make a choice", gramT), selected = "Make a choice"),
+           'Reading' = selectInput("dynamics", "Select Test", choices = c("Make a choice",readT), selected = "Make a choice"),
+           'Writing Adv' = selectInput("dynamics", "Select Test", choices = c("Make a choice",writT), selected = "Make a choice"),
+           'Writing Int' = selectInput("dynamics", "Select Test", choices = c("Make a choice",writT), selected = "Make a choice"),
+           'Writing Basic' = selectInput("dynamics", "Select Test", choices = c("Make a choice",writT), selected = "Make a choice"),
+           'Listening/Speaking' = selectInput("dynamics", "Select Test", c("Make a choice",choices = lstspT), selected = "Make a choice")
     )
   })
   
@@ -462,7 +497,7 @@ shinyServer(function(input, output) {
   })
   
   level_skill_stemplot <- reactive({
-
+    
     db <- dbConnect(SQLite(), 'Achievement')
     query <- sprintf("SELECT * FROM %s", input$sum)
 
@@ -698,8 +733,6 @@ shinyServer(function(input, output) {
   })
   
   output$testsumTable <- DT::renderDataTable({
-    if (is.null(input$courseLevel))
-      return()
     
     switch(input$courseLevel,
       
@@ -734,14 +767,14 @@ shinyServer(function(input, output) {
   })
   
   output$stem <- renderPlot({
-    if (is.null(input$courseLevel))
-      return()
-    
+
     switch(input$courseLevel,
            
            'Grammar' = level_skill_stemplot(),
            'Reading' = level_skill_stemplot(),
-           'Writing' = level_skill_stemplot()
+           'Writing Basic' = level_skill_stemplot(),
+           'Writing Int' = level_skill_stemplot(),
+           'Writing Adv' = level_skill_stemplot()
     )
   }, bg="transparent")
   
@@ -989,6 +1022,7 @@ shinyServer(function(input, output) {
 
   write_rater_int <- reactive({
     
+    
     db <- dbConnect(SQLite(), 'Achievement')
     query <- sprintf("SELECT * FROM %s", input$dynamics)
     
@@ -1118,9 +1152,7 @@ shinyServer(function(input, output) {
   
   
   output$item_analysisTable <- DT::renderDataTable({
-        if (is.null(input$courseLevels))
-          return()
-        
+
         switch(input$courseLevels,
            
             'Grammar' = DT::datatable(
