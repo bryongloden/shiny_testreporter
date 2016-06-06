@@ -10,4 +10,4 @@ http://daattali.com/shiny/persistent-data-storage/
 
 http://shiny.rstudio.com/articles/persistent-data-storage.html
 
-This app is currently under development. The next updates will include criterion-referenced test analysis measures.
+This app is currently under development, and can be demoed at https://laflair.shinyapps.io/shiny_testreporter/. The next updates will include criterion-referenced test analysis measures.
